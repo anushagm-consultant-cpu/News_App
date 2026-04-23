@@ -1,6 +1,7 @@
 package com.example.news_app
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,11 +18,12 @@ class SecondFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
+        Log.d("secondFragment", "onCreateView")
+
         // Inflate the layout for this fragment
        return inflater.inflate(R.layout.fragment_second, container, false)
-
-
-
 
     }
 
@@ -40,8 +42,54 @@ class SecondFragment : Fragment() {
             .load(imageUrl)
             .into(imageView)
 
+        Log.d("secondFragment", "onViewCreated")
 
     }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        Log.d("secondFragment","onCreate")
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onStart() {
+        Log.d("secondFragment","onStart")
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d("secondFragment","onResume")
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d("secondFragment","onPause")
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d("secondFragment","onStop")
+        super.onStop()
+    }
+
+    override fun onDestroyView() {
+        Log.d("secondFragment","onDestroyView")
+        super.onDestroyView()
+    }
+
+
+    override fun onDestroy() {
+        Log.d("secondFragment","onDestroy")
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        Log.d("secondFragment", "onDetach")
+        super.onDetach()
+    }
+
+
+
 
 
 }
