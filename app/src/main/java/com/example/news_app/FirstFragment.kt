@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
@@ -19,6 +20,8 @@ class FirstFragment : Fragment() {
 
     private lateinit var adaptor: NewsAdaptor
     private lateinit var recyclerView: RecyclerView
+
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreateView(
 
@@ -35,6 +38,9 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        //initizing the progressBar
+        progressBar = view.findViewById(R.id.progressBar)
+
         recyclerView = view.findViewById(R.id.recyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -46,66 +52,82 @@ class FirstFragment : Fragment() {
     }
 
     private fun fetchNews() {
+
+
+    // progressBar till the data is being fetched
+        progressBar.visibility = View.VISIBLE
+
         //
         lifecycleScope.launch {
             try {
                 Log.d("FirstFragment", "Fetching news...")
 
                 //This line waits for the network but DOES NOT freeze the app
-                val response = RetrofitInstance.api.getNews("us", "eefee1a52611470e91fffc447798d5f0")
+                val response =
+                    RetrofitInstance.api.getNews("us", "eefee1a52611470e91fffc447798d5f0")
 
                 if (response.isSuccessful) {
                     val articles = response.body()?.articles ?: emptyList()
-                  //  Log.d("FirstFragment", "Fetched ${articles.size} news articles.")
+                    //  Log.d("FirstFragment", "Fetched ${articles.size} news articles.")
 
 
                     //logic for when an item is clicked
 
-                    adaptor = NewsAdaptor(articles){article ->
+                    adaptor = NewsAdaptor(articles) { article ->
 
 
                         val bundle = Bundle().apply {
-                                putString("title",article.title)
-                                putString("description",article.description)
-                                putString("imageUrl",article.urlToImage)
+                            putString("title", article.title)
+                            putString("description", article.description)
+                            putString("imageUrl", article.urlToImage)
 
-                            }
+                        }
 
 //                        parentFragmentManager.beginTransaction()
 //                            .replace(R.id.main,secondFragment)
 //                            .addToBackStack(null)
 //                            .commit()
 
-                        findNavController().navigate(R.id.action_firstFragment_to_secondFragment,bundle)
+                        findNavController().navigate(
+                            R.id.action_firstFragment_to_secondFragment,
+                            bundle
+                        )
 
                     }
 
                     recyclerView.adapter = adaptor
 
+
+                    //progressBar will be gone if there is no error and data is fetched
+
+                    progressBar.visibility = View.GONE
+
+
                 } else {
                     Log.e("FirstFragment", "Request failed. Code: ${response.code()}")
 
-                    Toast.makeText(requireContext(),"Server Error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Server Error", Toast.LENGTH_SHORT).show()
                 }
             } catch (e: Exception) {
                 Log.e("FirstFragment", "Error fetching news", e)
 
                 showErrorDailog()
+
             }
         }
     }
 
-    private fun showErrorDailog(){
+    private fun showErrorDailog() {
 
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Error")
         builder.setMessage("Something went wrong. Please try again later.")
-        builder.setPositiveButton("Retry"){_, _ ->
+        builder.setPositiveButton("Retry") { dialog, which->
             fetchNews()
 
 
-    }
-        builder.setNegativeButton("close"){_,_ ->
+        }
+        builder.setNegativeButton("close") { dialog, which->
             requireActivity().finish()
         }
         builder.setCancelable(false)
@@ -113,48 +135,4 @@ class FirstFragment : Fragment() {
 
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-
-        Log.d("FirstFragment","onCreate")
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onStart() {
-        Log.d("FirstFragment","onStart")
-        super.onStart()
-    }
-
-
-
-    override fun onResume() {
-        Log.d("FirstFragment","onResume")
-        super.onResume()
-    }
-
-
-    override fun onPause() {
-        Log.d("FirstFragment","onPause")
-        super.onPause()
-    }
-
-    override fun onStop() {
-        Log.d("FirstFragment","onStop")
-        super.onStop()
-    }
-
-    override fun onDestroyView() {
-        Log.d("FirstFragment","onDestroyView")
-        super.onDestroyView()
-    }
-
-
-    override fun onDestroy() {
-        Log.d("FirstFragment","onDestroy")
-        super.onDestroy()
-    }
-
-    override fun onDetach() {
-        Log.d("FirstFragment", "onDetach")
-        super.onDetach()
-    }
 }
