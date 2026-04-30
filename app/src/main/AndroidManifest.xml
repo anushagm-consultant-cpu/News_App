@@ -21,7 +21,8 @@
         android:theme="@style/Theme.News_App">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Starting"><!---SPLASH SCREEN APPLIED HERE -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
